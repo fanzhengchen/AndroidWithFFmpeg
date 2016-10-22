@@ -4,23 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <TextView
-        android:id="@+id/play_video"
+        android:id="@+id/transcode"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:background="@color/background"
-        android:gravity="center"
-        android:text="@string/play_video" />
-
-    <TextView
-        android:id="@+id/transcode_video"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
         android:background="@color/background"
         android:gravity="center"
         android:text="@string/transcode_video" />
+
 
 </LinearLayout>

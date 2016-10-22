@@ -6,31 +6,33 @@
 //#include "VideoPlayer.h"
 #include <android/log.h>
 #include <android/native_window.h>
+#include <stdio.h>
 #include <android/native_window_jni.h>
+#include <string>
+#include <memory>
 
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libswscale/swscale.h"
 #include "libavutil/imgutils.h"
-};
-
+#include "ffmpeg.h"
+}
 
 #define  LOG_TAG    "videoplayer"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 
-extern "C" {
-JNIEXPORT jint JNICALL Java_com_fzc_ffmpegandroidsample_MainActivity_play
-        (JNIEnv *env, jclass clazz, jobject surface);
-}
+const int SIZE = 1 << 9;
 
-JNIEXPORT jint JNICALL Java_com_fzc_ffmpegandroidsample_MainActivity_play
+
+extern "C"
+JNIEXPORT jint JNICALL Java_com_fzc_ffmpegandroidsample_Player_play
         (JNIEnv *env, jclass clazz, jobject surface) {
     LOGD("play");
 
     // sd卡中的视频文件地址,可自行修改或者通过jni传入
-    char path[] = "/storage/emulated/0/Android/data/com.fzc.ffmpegandroidsample/cache/2016-08-04_11_13_15.mp4";
-    char *file_name = path;
+//    char path[] = "/storage/emulated/0/Android/data/com.fzc.ffmpegandroidsample/cache/2016-08-04_11_13_15.mp4";
+    const char *file_name = "/storage/emulated/0/Android/out.mp4";
 
 
     av_register_all();
@@ -178,8 +180,22 @@ JNIEXPORT jint JNICALL Java_com_fzc_ffmpegandroidsample_MainActivity_play
     return 0;
 }
 
-//JNIEXPORT jint JNICALL
-//Java_com_fzc_ffmpegandroidsample_MainActivity_play(JNIEnv *env, jobject instance, jobject surface) {
-//
-//
-//}
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_fzc_ffmpegandroidsample_Player_transcodeVideo(JNIEnv *env, jclass type,
+                                                       jobjectArray cmds) {
+
+    jint argc = env->GetArrayLength(cmds);
+    jboolean copy = false;
+    char **argv = (char **) malloc(sizeof(char *) * argc);
+    for (int i = 0; i < argc; ++i) {
+        jstring str = (jstring) (env->GetObjectArrayElement(cmds, i));
+        const char *s = env->GetStringUTFChars(str, &copy);
+        argv[i] = (char *) malloc(sizeof(char) * SIZE);
+        strcpy(argv[i], s);
+        LOGD("command %s", argv[i]);
+    }
+    int ret = run(argc, argv);
+    LOGD("transcode ret %d", ret);
+    return ret;
+}
