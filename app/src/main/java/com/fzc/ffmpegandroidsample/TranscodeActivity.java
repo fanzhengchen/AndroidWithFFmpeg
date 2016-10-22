@@ -37,7 +37,7 @@ public class TranscodeActivity extends AppCompatActivity {
                 "ffmpeg",
                 "-i",
                 basePath + File.separator + "out.mp4",
-                basePath + File.separator + "ffmpeg.mp4",
+                basePath + File.separator + "ffmpeg-out.mp4",
         };
 
         Observable.just(commands)
