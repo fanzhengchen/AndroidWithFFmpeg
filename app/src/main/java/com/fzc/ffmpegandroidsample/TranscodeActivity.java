@@ -9,6 +9,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +79,7 @@ public class TranscodeActivity extends AppCompatActivity {
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer result) {
-                        System.out.println("transcode result " + result);
+                        Logger.v("transcode result " + result);
                     }
                 });
 
