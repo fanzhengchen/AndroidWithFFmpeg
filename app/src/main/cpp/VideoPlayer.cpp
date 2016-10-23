@@ -196,6 +196,7 @@ Java_com_fzc_ffmpegandroidsample_Player_transcodeVideo(JNIEnv *env, jclass type,
         LOGD("command %s", argv[i]);
     }
     int ret = run(argc, argv);
+    free(argv);
     LOGD("transcode ret %d", ret);
     return ret;
 }

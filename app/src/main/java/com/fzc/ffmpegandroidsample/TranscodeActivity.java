@@ -1,10 +1,17 @@
 package com.fzc.ffmpegandroidsample;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,6 +27,15 @@ import rx.schedulers.Schedulers;
 
 public class TranscodeActivity extends AppCompatActivity {
 
+    private TranscodeService mRemoteService;
+    private ITranscodeAidlInterface aidlInterface;
+    private final String basePath = "/storage/emulated/0/Android";
+    private final String[] commands = {
+            "ffmpeg",
+            "-i",
+            basePath + File.separator + "out.mp4",
+            basePath + File.separator + "ffmpeg-remote.mp4",
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,17 +44,26 @@ public class TranscodeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.transcode)
+    @OnClick(R.id.start_remote_service)
+    public void startRemoteService() {
+        Intent intent = new Intent(getApplicationContext(), TranscodeService.class);
+        bindService(intent, sc, Context.BIND_AUTO_CREATE);
+    }
+
+    @OnClick(R.id.transcode_remote_process)
+    public void transcodeInRemoteProcess() {
+        startRemoteService();
+        List<String> cmds = Arrays.asList(commands);
+        try {
+            aidlInterface.transcode(cmds);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.transcode_io_thread)
     public void transcode() {
 
-
-        String basePath = "/storage/emulated/0/Android";
-        String[] commands = {
-                "ffmpeg",
-                "-i",
-                basePath + File.separator + "out.mp4",
-                basePath + File.separator + "ffmpeg-out.mp4",
-        };
 
         Observable.just(commands)
                 .map(new Func1<String[], Integer>() {
@@ -55,5 +80,26 @@ public class TranscodeActivity extends AppCompatActivity {
                         System.out.println("transcode result " + result);
                     }
                 });
+
+    }
+
+
+    private ServiceConnection sc = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            aidlInterface = ITranscodeAidlInterface.Stub.asInterface(service);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            aidlInterface = null;
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(sc);
     }
 }

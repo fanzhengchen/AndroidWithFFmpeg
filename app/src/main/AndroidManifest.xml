@@ -25,7 +25,7 @@
 
         <service
             android:name=".TranscodeService"
-            android:process=":Transcode" />
+            android:process=":remote" />
     </application>
 
 

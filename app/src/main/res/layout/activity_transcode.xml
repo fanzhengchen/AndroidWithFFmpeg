@@ -5,12 +5,31 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/transcode"
+        android:id="@+id/start_remote_service"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_margin="10dp"
         android:background="@color/background"
         android:gravity="center"
-        android:text="@string/transcode_video" />
+        android:text="@string/start_remote_process" />
+
+    <TextView
+        android:id="@+id/transcode_remote_process"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:background="@color/background"
+        android:gravity="center"
+        android:text="@string/transcode_remote_process" />
+
+    <TextView
+        android:id="@+id/transcode_io_thread"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:background="@color/background"
+        android:gravity="center"
+        android:text="@string/transcode_io_thread" />
 
 
 </LinearLayout>
