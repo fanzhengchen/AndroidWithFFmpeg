@@ -18,8 +18,8 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -35,8 +35,13 @@ public class TranscodeActivity extends AppCompatActivity {
     private final String[] commands = {
             "ffmpeg",
             "-i",
-            basePath + File.separator + "out.mp4",
-            basePath + File.separator + "ffmpeg-remote.mp4",
+            basePath + File.separator + "sexy.mp4",
+            "-b",
+            "800",
+            "-s",
+            "320x240",
+            "-r", "24",
+            basePath + File.separator + "out8.mkv",
     };
 
     @Override
@@ -76,10 +81,20 @@ public class TranscodeActivity extends AppCompatActivity {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
+                .subscribe(new Subscriber<Integer>() {
                     @Override
-                    public void call(Integer result) {
-                        Logger.v("transcode result " + result);
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.e(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Logger.d("transcode result " + integer);
                     }
                 });
 
