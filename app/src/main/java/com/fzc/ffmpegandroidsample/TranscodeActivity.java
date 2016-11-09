@@ -31,11 +31,11 @@ public class TranscodeActivity extends AppCompatActivity {
 
     private TranscodeService mRemoteService;
     private ITranscodeAidlInterface aidlInterface;
-    private final String basePath = "/storage/emulated/0/Android";
+    private final String basePath = "/storage/emulated/0";
     private final String[] commands = {
             "ffmpeg",
             "-i",
-            basePath + File.separator + "sexy.mp4",
+            basePath + File.separator + "video_20161107_160521.mp4",
             "-b",
             "800",
             "-s",
