@@ -35,13 +35,13 @@ public class TranscodeActivity extends AppCompatActivity {
     private final String[] commands = {
             "ffmpeg",
             "-i",
-            basePath + File.separator + "sexy.mp4",
+            basePath + File.separator + "video.mp4",
             "-b",
-            "800",
+            "1.5M",
             "-s",
-            "320x240",
+            "1080x1920",
             "-r", "24",
-            basePath + File.separator + "out8.mkv",
+            basePath + File.separator + System.currentTimeMillis() + "out.mkv",
     };
 
     @Override
@@ -117,6 +117,8 @@ public class TranscodeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(sc);
+        if (aidlInterface != null) {
+            unbindService(sc);
+        }
     }
 }
