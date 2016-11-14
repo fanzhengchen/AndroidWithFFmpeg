@@ -38,11 +38,11 @@ public class TranscodeActivity extends AppCompatActivity {
             basePath + File.separator + "video.mp4",
             "-b",
             "0.2M",
-            "-c:v",
-            "libx264",
             "-s",
             "1080x1920",
             "-r", "24",
+            "-c:v",
+            "libx264",
             basePath + File.separator + System.currentTimeMillis() + "out.mkv",
     };
 
