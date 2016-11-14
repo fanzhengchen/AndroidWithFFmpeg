@@ -2,8 +2,9 @@
 export TEMPDIR=/Users/fanzhengchen/Desktop/ffmpeg
 NDK=/Users/fanzhengchen/Android/sdk/ndk-bundle
 PLATFORM=/Users/fanzhengchen/Android/sdk/ndk-bundle/platforms/android-21/arch-arm
+INCLUDE=/Users/fanzhengchen/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include
 TOOLCHAIN=/Users/fanzhengchen/Android/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
-
+CC=~/Android/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/
 function build_one
 {
 ./configure \
@@ -12,14 +13,36 @@ function build_one
     --cross-prefix=$TOOLCHAIN/bin/arm-linux-androideabi- \
     --arch=arm \
     --sysroot=$PLATFORM \
-    --extra-cflags="-I$PLATFORM/usr/include" \
     --cc=$TOOLCHAIN/bin/arm-linux-androideabi-gcc \
     --nm=$TOOLCHAIN/bin/arm-linux-androideabi-nm \
+    --extra-cflags="-I$INCLUDE $OPTIMIZE_CFLAGS -I/Users/fanzhengchen/x264/android_x264/include -fPIC -DANDROID -D__thumb__ -mthumb -Wfatal-errors -Wno-deprecated -mfloat-abi=softfp -mfpu=vfpv3-d16 -marm -march=armv7-a" \
+    --extra-ldflags="-L/Users/fanzhengchen/x264/android_x264/lib" \
+    --disable-asm \
+    --arch=arm \
     --enable-shared \
+    --disable-static \
     --enable-runtime-cpudetect \
+    --enable-nonfree \
+    --enable-version3 \
     --enable-gpl \
+    --disable-doc \
+    --disable-avresample \
+    --enable-demuxer=rtsp \
+    --enable-muxer=rtsp \
+    --disable-ffplay \
+    --disable-ffserver \
+    --disable-ffmpeg \
+    --disable-ffprobe \
+    --enable-libx264 \
+    --disable-debug \
     --enable-small \
-    --enable-cross-compile \
+    --enable-encoder=libx264 \
+    --enable-decoder=h264 \
+    --enable-protocol=rtp \
+    --enable-hwaccels \
+    --enable-zlib \
+    --disable-devices \
+    --disable-avdevice \
     --disable-debug \
     --disable-static \
     --disable-doc \
@@ -32,20 +55,13 @@ function build_one
     --disable-avdevice \
     --disable-symver \
     --disable-stripping \
-$ADDITIONAL_CONFIGURE_FLAG
-sed -i '' 's/HAVE_LRINT 0/HAVE_LRINT 1/g' config.h
-sed -i '' 's/HAVE_LRINTF 0/HAVE_LRINTF 1/g' config.h
-sed -i '' 's/HAVE_ROUND 0/HAVE_ROUND 1/g' config.h
-sed -i '' 's/HAVE_ROUNDF 0/HAVE_ROUNDF 1/g' config.h
-sed -i '' 's/HAVE_TRUNC 0/HAVE_TRUNC 1/g' config.h
-sed -i '' 's/HAVE_TRUNCF 0/HAVE_TRUNCF 1/g' config.h
-sed -i '' 's/HAVE_CBRT 0/HAVE_CBRT 1/g' config.h
-sed -i '' 's/HAVE_RINT 0/HAVE_RINT 1/g' config.h
+
 make clean
 make -j4
 make install
 } 
-CPU=arm
+CPU=armv7-a
 PREFIX=$(pwd)/android/$CPU 
-ADDI_FLAG="-marm" 
+OPTIMIZE_CFLAGS="-mfloat-abi=softfp -mfpu=vfp -marm -march=$CPU "
 build_one
+
